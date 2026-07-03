@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: corgi-nport-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: corgi
+      POSTGRES_PASSWORD: corgi
+      POSTGRES_DB: corgi
+    ports:
+      - "5434:5432"
+    volumes:
+      - corgi_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U corgi -d corgi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  corgi_pgdata:

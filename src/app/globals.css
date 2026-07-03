@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   The digital filing room.
+   Registrar ink, document paper, certificate green, stamp red.
+   Type: Newsreader (display serif) · Public Sans (UI) · IBM Plex Mono (data).
+------------------------------------------------------------------- */
+
+@theme {
+  --color-paper: #faf9f6; /* document paper — barely warm */
+  --color-surface: #ffffff;
+  --color-ink: #0e1b2c; /* registrar ink */
+  --color-muted: #45536a;
+  --color-faint: #5f6b80;
+  --color-line: #e6e3da; /* warm hairline rule */
+  --color-line-strong: #cfcabb;
+
+  --color-accent: #175e4c; /* engraved certificate green */
+  --color-accent-soft: #ecf3ef;
+
+  --color-ok: #175e4c;
+  --color-ok-soft: #ecf3ef;
+  --color-warn: #8a5a12;
+  --color-warn-soft: #f8f0e0;
+  --color-err: #a83226; /* stamp red */
+  --color-err-soft: #f9ecea;
+  --color-info: #274e79;
+  --color-info-soft: #ebf1f8;
+
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Code", Consolas, monospace;
+
+  --radius: 6px;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #d8e7e0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92em;
+}
+
+/* --- Masthead: a document header, ruled like a ledger --- */
+.masthead {
+  background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-line-strong);
+  box-shadow: 0 1px 0 var(--color-paper), 0 2px 0 var(--color-line);
+}
+
+/* --- Cards: flat paper panels, hairline-ruled --- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgb(14 27 44 / 0.03);
+}
+
+/* --- The filing stamp: the signature element. Used sparingly. --- */
+.stamp {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  outline: 1px solid currentColor;
+  outline-offset: 2.5px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.55;
+  text-align: center;
+  transform: rotate(-2deg);
+  opacity: 0.92;
+}
+.stamp-ok { color: var(--color-ok); }
+.stamp-err { color: var(--color-err); }
+.stamp-draft {
+  color: var(--color-faint);
+  border-style: dashed;
+  outline-style: dashed;
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-line-strong);
+  background: var(--color-surface);
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 550;
+  color: var(--color-ink);
+  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:hover {
+  background: var(--color-paper);
+  border-color: var(--color-faint);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-accent {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+.btn-accent:hover {
+  background: #114a3c;
+  border-color: #114a3c;
+}
+.btn-primary {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #1d3049;
+  border-color: #1d3049;
+}
+
+/* --- Badges: small mono tags, like form codes --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.14rem 0.5rem;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.badge-ok { background: var(--color-ok-soft); color: var(--color-ok); border-color: #cde0d7; }
+.badge-warn { background: var(--color-warn-soft); color: var(--color-warn); border-color: #ead9b8; }
+.badge-err { background: var(--color-err-soft); color: var(--color-err); border-color: #eccfcb; }
+.badge-info { background: var(--color-info-soft); color: var(--color-info); border-color: #cddced; }
+.badge-neutral { background: #f1efe9; color: var(--color-muted); border-color: var(--color-line); }
+
+.dot { width: 7px; height: 7px; border-radius: 999px; display: inline-block; flex-shrink: 0; }
+
+/* --- Labels & ledger tables --- */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+.th {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--color-line-strong);
+  white-space: nowrap;
+}
+.td {
+  padding: 0.52rem 0.75rem;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+tbody tr:last-child .td {
+  border-bottom: none;
+}
+tr:hover .td {
+  background: #fcfbf8;
+}
+
+.link {
+  color: var(--color-accent);
+  font-weight: 550;
+  text-underline-offset: 3px;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Double rule — the ledger "total" line */
+.rule-double {
+  border-top: 3px double var(--color-line-strong);
+}

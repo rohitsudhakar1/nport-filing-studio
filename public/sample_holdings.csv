@@ -1,0 +1,17 @@
+name,title,cusip,ticker,shares,value,weight,asset_category,issuer_category,payoff,country,sector
+Apple Inc,Apple Inc Common Stock,037833100,AAPL,520000,28000000,11.20,EC,CORP,Long,US,Information Technology
+Microsoft Corp,Microsoft Corp Common Stock,594918104,MSFT,68000,29500000,11.80,EC,CORP,Long,US,Information Technology
+NVIDIA Corp,NVIDIA Corp Common Stock,67066G104,NVDA,210000,29000000,11.60,EC,CORP,Long,US,Information Technology
+Amazon.com Inc,Amazon.com Inc Common Stock,023135106,AMZN,110000,19750000,7.90,EC,CORP,Long,US,Consumer Discretionary
+Alphabet Inc Class A,Alphabet Inc Cl A Common Stock,02079K107,GOOGL,88000,15250000,6.10,EC,CORP,Long,US,Communication Services
+Meta Platforms Inc,Meta Platforms Inc Cl A,30303M102,META,26000,13500000,5.40,EC,CORP,Long,US,Communication Services
+Tesla Inc,Tesla Inc Common Stock,88160R101,TSLA,52000,7250000,2.90,EC,CORP,Long,US,Consumer Discretionary
+Berkshire Hathaway Inc Cl B,Berkshire Hathaway Cl B,084670702,BRK.B,20000,9000000,3.60,EC,FIN,Long,US,Financials
+JPMorgan Chase & Co,JPMorgan Chase & Co Common,46625H100,JPM,38000,7750000,3.10,EC,FIN,Long,US,Financials
+Visa Inc Class A,Visa Inc Cl A Common Stock,92826C839,V,24000,7000000,2.80,EC,FIN,Long,US,Financials
+UnitedHealth Group Inc,UnitedHealth Group Common,91324P102,UNH,12000,6250000,2.50,EC,CORP,Long,US,Health Care
+Exxon Mobil Corp,Exxon Mobil Corp Common,30231G102,XOM,50000,5500000,2.20,EC,CORP,Long,US,Energy
+Eli Lilly & Co,Eli Lilly & Co Common Stock,532457108,LLY,6000,4500000,1.80,EC,CORP,Long,US,Health Care
+Broadcom Inc,Broadcom Inc Common Stock,11135F110,AVGO,3000,4750000,1.90,EC,CORP,Long,US,Information Technology
+Novo Nordisk A/S ADR,Novo Nordisk ADR,670100205,NVO,40000,4250000,1.70,EC,CORP,Long,DK,Health Care
+State Street Instl US Govt Money Market,SSgA Govt MMF,85749P101,GVMXX,58000000,58000000,23.55,STIV,RF,Long,US,Cash & Equivalents

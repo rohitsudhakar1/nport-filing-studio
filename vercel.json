@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/reseed",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}
