@@ -236,7 +236,10 @@ export async function importFromEdgar(ticker: string) {
   try {
     const ref = await resolveFund(ticker);
     if (!ref) {
-      return { ok: false as const, error: `No fund with ticker "${ticker.toUpperCase()}" in EDGAR's registry.` };
+      return {
+        ok: false as const,
+        error: `"${ticker.toUpperCase()}" isn't in EDGAR's fund registry. N-PORT is filed by funds, not companies — a stock like AAPL has no N-PORT. Try an ETF ticker such as IVV, VTI, or VOO.`,
+      };
     }
 
     const filingRefs = await listNportFilings(ref.seriesId, 2);
