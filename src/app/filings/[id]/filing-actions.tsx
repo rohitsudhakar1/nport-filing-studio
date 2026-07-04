@@ -58,8 +58,9 @@ export function FilingActions({
       ) : summary.openErrors > 0 ? (
         <span className="inline-flex items-center gap-2">
           <span className="text-xs text-err">
-            {summary.openErrors} error{summary.openErrors === 1 ? "" : "s"} block signing — fix or
-            resolve them in Exceptions
+            {summary.openErrors === 1
+              ? "1 error blocks signing — fix or resolve it in Exceptions"
+              : `${summary.openErrors} errors block signing — fix or resolve them in Exceptions`}
           </span>
           <button type="button" className="btn btn-accent" disabled>
             Sign &amp; approve…
