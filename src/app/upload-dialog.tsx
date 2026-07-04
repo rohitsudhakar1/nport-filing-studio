@@ -55,7 +55,7 @@ export function UploadDialog({ funds }: { funds: FundOpt[] }) {
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" onClick={() => setOpen(false)}>
-      <div className="card w-full max-w-lg p-6" onClick={(e) => e.stopPropagation()}>
+      <div className="card w-full max-w-lg p-6 max-h-[88vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="label">Fund-admin upload</div>
         <h3 className="font-display text-xl font-medium mt-1">New filing from holdings CSV</h3>
         <p className="text-sm text-muted mt-1">
