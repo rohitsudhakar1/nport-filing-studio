@@ -49,7 +49,7 @@ ${idBlock}
       <payoffProfile>${esc(h.payoffProfile)}</payoffProfile>
       <assetCat>${esc(h.assetCategory)}</assetCat>
       <issuerCat>${esc(h.issuerCategory)}</issuerCat>
-      <invCountry>${esc(h.country)}</invCountry>
+${h.country ? `      <invCountry>${esc(h.country)}</invCountry>` : "      <invCountry>N/A</invCountry>"}
       <isRestrictedSec>N</isRestrictedSec>
       <fairValLevel>1</fairValLevel>
     </invstOrSec>`;

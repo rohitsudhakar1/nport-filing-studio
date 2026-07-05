@@ -1,6 +1,7 @@
 import {
   ASSET_CATEGORIES,
   type Holding,
+  isDerivative,
   ISSUER_CATEGORIES,
   PAYOFF_PROFILES,
   type ValidationFinding,
@@ -31,17 +32,22 @@ export function validateHoldings(holdings: Holding[]): ValidationFinding[] {
 
   // --- Per-holding rules ---
   const seenIds = new Map<string, number>();
+  let derivativesWithoutId = 0;
   for (const h of holdings) {
     const row = h.sourceRow;
+    const deriv = isDerivative(h.assetCategory);
 
     if (!h.name?.trim()) add("MISSING_NAME", "error", "Missing issuer name (C.1.a).", row, "name");
     if (!h.title?.trim())
       add("MISSING_TITLE", "error", "Missing title of issue (C.1.c).", row, "title");
 
-    // Identifiers: N-PORT requires at least one of CUSIP/ISIN/LEI/ticker.
+    // Identifiers: securities need at least one of CUSIP/ISIN/LEI/ticker. Derivatives
+    // (futures, swaps) legitimately have none — those are aggregated into one info note.
     const hasAnyId = h.cusip || h.isin || h.lei || h.ticker;
-    if (!hasAnyId)
-      add("NO_IDENTIFIER", "error", "No CUSIP, ISIN, LEI, or ticker provided.", row, "cusip");
+    if (!hasAnyId) {
+      if (deriv) derivativesWithoutId++;
+      else add("NO_IDENTIFIER", "error", "No CUSIP, ISIN, LEI, or ticker provided.", row, "cusip");
+    }
 
     if (h.cusip && !isValidCusip(h.cusip))
       add("BAD_CUSIP", "error", `CUSIP "${h.cusip}" fails check-digit validation.`, row, "cusip");
@@ -50,18 +56,21 @@ export function validateHoldings(holdings: Holding[]): ValidationFinding[] {
     if (h.lei && !isValidLei(h.lei))
       add("BAD_LEI", "warning", `LEI "${h.lei}" fails ISO 17442 check digits.`, row, "lei");
 
-    // Duplicate identifier across rows.
-    const idKey = (h.cusip || h.isin || h.ticker || h.name).toUpperCase();
-    if (seenIds.has(idKey)) {
-      add(
-        "DUPLICATE_HOLDING",
-        "warning",
-        `Duplicate position — same identifier as row ${seenIds.get(idKey)}.`,
-        row,
-        "cusip",
-      );
-    } else {
-      seenIds.set(idKey, row);
+    // Duplicate check — only meaningful across rows that carry a real security identifier
+    // (identifier-less derivative rows would all collapse onto the same name key).
+    if (h.cusip || h.isin || h.ticker) {
+      const idKey = (h.cusip || h.isin || h.ticker || "").toUpperCase();
+      if (seenIds.has(idKey)) {
+        add(
+          "DUPLICATE_HOLDING",
+          "warning",
+          `Duplicate position — same identifier as row ${seenIds.get(idKey)}.`,
+          row,
+          "cusip",
+        );
+      } else {
+        seenIds.set(idKey, row);
+      }
     }
 
     // Enums.
@@ -90,10 +99,11 @@ export function validateHoldings(holdings: Holding[]): ValidationFinding[] {
         "payoffProfile",
       );
 
-    // Numeric sanity.
+    // Numeric sanity. Negative values on derivatives are normal (unrealized losses on
+    // futures/swaps) — flag them only on cash securities.
     if (!Number.isFinite(h.valueUsd))
       add("BAD_VALUE", "error", "Value (C.3) is not a number.", row, "valueUsd");
-    if (h.valueUsd < 0 && h.payoffProfile !== "Short")
+    if (h.valueUsd < 0 && h.payoffProfile !== "Short" && !deriv)
       add(
         "NEGATIVE_VALUE",
         "warning",
@@ -112,8 +122,9 @@ export function validateHoldings(holdings: Holding[]): ValidationFinding[] {
         "pctOfNetAssets",
       );
 
-    // Country: ISO 3166-1 alpha-2 shape.
-    if (!/^[A-Z]{2}$/.test(h.country || ""))
+    // Country: ISO 3166-1 alpha-2 shape. Empty is accepted (derivatives report no
+    // investment country).
+    if (h.country && !/^[A-Z]{2}$/.test(h.country))
       add(
         "BAD_COUNTRY",
         "warning",
@@ -121,6 +132,18 @@ export function validateHoldings(holdings: Holding[]): ValidationFinding[] {
         row,
         "country",
       );
+  }
+
+  // Aggregated note instead of one finding per derivative row.
+  if (derivativesWithoutId > 0) {
+    add(
+      "DERIV_NO_IDENTIFIER",
+      "info",
+      `${derivativesWithoutId} derivative position${derivativesWithoutId === 1 ? "" : "s"} ` +
+        `(futures/swaps) carry no standard identifier — normal for exchange-traded derivatives.`,
+      null,
+      "cusip",
+    );
   }
 
   // --- Filing-level rules ---

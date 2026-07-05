@@ -38,6 +38,13 @@ export const ISSUER_CATEGORIES = {
 } as const;
 export type IssuerCategory = keyof typeof ISSUER_CATEGORIES;
 
+/** Derivative asset categories: futures/swaps/options have no CUSIP/ISIN and can carry
+ * negative unrealized values — validation treats them differently from cash securities. */
+export const DERIVATIVE_CATEGORIES = new Set(["DCO", "DE", "DFE", "DIR", "DCR"]);
+export function isDerivative(cat: string): boolean {
+  return DERIVATIVE_CATEGORIES.has(cat);
+}
+
 /** N-PORT Item C.5.a — payoff profile. */
 export const PAYOFF_PROFILES = ["Long", "Short", "N/A"] as const;
 export type PayoffProfile = (typeof PAYOFF_PROFILES)[number];
