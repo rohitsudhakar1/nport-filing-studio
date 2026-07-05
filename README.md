@@ -30,7 +30,7 @@ Every state change — ingest, validation, fix, resolution, approval — lands i
 
 Type `IVV` and the app resolves the ticker through EDGAR's fund registry, pulls the two most recent Form N-PORT filings for that *series* (a trust like iShares files hundreds), parses the XML, and loads them — the earlier as approved reference data, the latest into the review queue.
 
-The validator found real anomalies in BlackRock's actual $721B S&P 500 ETF filing: a position with no identifier of any kind, a negative value on a Long position, and a duplicate CUSIP. The period diff shows genuine index turnover (6 added / 6 removed / 26 reweighted for Mar 2026 vs. Dec 2025 — Vertiv and Ciena really did join the S&P 500).
+The validator found a real anomaly in BlackRock's actual $721B S&P 500 ETF filing — a duplicate CUSIP across two rows — and the period diff shows genuine index turnover (6 added / 6 removed / 26 reweighted for Mar 2026 vs. Dec 2025 — Vertiv and Ciena really did join the S&P 500). The rules are derivative-aware: futures and swaps legitimately carry no CUSIP, no investment country, and negative unrealized values, so those aggregate into one informational note instead of a wall of false positives.
 
 ![Real IVV filing under review](docs/ivv-real-data.png)
 
@@ -63,7 +63,8 @@ Lighthouse on the public pages: **100 accessibility · 100 best practices · 100
 ## Things I learned about N-PORT the hard way
 
 - **`repPdEnd` is not the reporting period.** It's the fund's fiscal-year end and is identical across a year of filings; `repPdDate` is the actual as-of date. Mapping the wrong one silently collapses distinct periods into one.
-- **Real filings use the literal string `"N/A"`** for missing LEIs and CUSIPs. Validate after normalizing, or you drown in false positives (16 of IVV's 18 initial warnings were this).
+- **Real filings use the literal string `"N/A"`** for missing LEIs, CUSIPs, names, and countries. Validate after normalizing, or you drown in false positives (16 of IVV's 18 initial warnings were this).
+- **Derivatives break naive rules.** Vanguard's S&P 500 fund holds index futures that legitimately have no identifier, no country, and negative values — a validator that doesn't know that reports 50+ phantom findings on a perfectly good filing.
 - **Diff on the most stable identifier.** Keying the period diff on CUSIP means a mistyped CUSIP shows up as a phantom add+remove; keying ticker-first keeps it a single validation error.
 - **CUSIP/ISIN/LEI check digits are cheap and catch real errors** — mod-10 double-add-double, Luhn over digit expansion, and ISO 7064 mod-97-10 respectively. All 507 identifiers in the real IVV filing pass; a single transposed digit fails.
 
